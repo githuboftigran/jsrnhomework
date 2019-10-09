@@ -1,0 +1,34 @@
+App should ask user to input a number or "exit" in a popup window.
+After user enters a natural (positive integer) number (n), app should log n-th prime number in console.
+Example:
+prompt: Enter a natural number or "exit"
+6
+log: 6th prime number is 13
+
+After logging the result in console, app should ask for a number or "exit" again and the flow should be repeated.
+If user types "exit" instead of a natural number, app execution should be ended.
+
+let, const and functions are not allowed.
+
+////////////////////////////////////////////
+
+Use
+
+    var num = prompt('Enter a natural number or "exit"');
+
+to get input value in num variable.
+If you are familiar with C++, this is like:
+
+    int num;
+    cin>>num;
+
+Use console.log to log a value of a statement in console:
+
+    console.log('some text');
+    console.log(aVariable);
+    console.log('some text' + aVariable);
+
+And this is like:
+    cout<<variableName;
+
+May the Force be with you!
