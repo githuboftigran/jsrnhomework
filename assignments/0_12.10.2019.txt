@@ -13,7 +13,7 @@ If user types "exit" instead of a natural number, app execution should be ended.
 
 let, const, functions of array and function declarations are not allowed.
 
-////////////////////////////////////////////
+///////////////////////////////////////////////////
 
 Use
 
