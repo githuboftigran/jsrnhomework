@@ -1,16 +1,25 @@
 App should ask user to input a number or "exit" in a popup window.
-After user enters a natural (positive integer) number (n), app should log n-th prime number in console.
+After user enters a natural (positive integer) number (n),
+app should log first n prime numbers in console sorted by last digit and separated with commas.
+
 Example:
 prompt: Enter a natural number or "exit"
 6
-log: 6th prime number is 13
+log: 11, 2, 3, 13, 5, 7
+ (or 11, 2, 13, 3, 5, 7 depending how the sorting was implemented)
 
 After logging the result in console, app should ask for a number or "exit" again and the flow should be repeated.
 If user types "exit" instead of a natural number, app execution should be ended.
 
-let, const and functions are not allowed.
+let, const, functions of array and function declarations are not allowed.
 
 ////////////////////////////////////////////
+
+Use
+
+    var arr = [];
+
+To declare an array.
 
 Use
 
