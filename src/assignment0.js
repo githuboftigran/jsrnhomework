@@ -21,6 +21,9 @@ while (c < num) {
     i++;
 }
 
+
+console.log(primeArr);
+
 for (let i = 0; i < primeArr.length - 1; i++) {
     for (var j = 0; j < primeArr.length - 1; j++) {
         if ((primeArr[j] % 10) > (primeArr[j + 1] % 10)) {
@@ -32,5 +35,4 @@ for (let i = 0; i < primeArr.length - 1; i++) {
 
 }
 
-console.log(primeArr);
 console.log(primeArr);
