@@ -1,6 +1,6 @@
 var number = prompt ('Enter a natural number or "exit"');   // this variable keeps the quantity of prime numbers  
 var currentNumber;                                          // this is a variable for cuurent number is going to be checked
-var flag;                                                   // flag keeps the primety for current number
+var isPrime;                                                // isPrime keeps the primety for current number
 var primeNumberQuantity = 1;                                // this is the quantity of prime numbers are already checked; it's initially 1, because we are not going to check number 2
 var massive = [];                                           // a massive to collect prime numbers
 var sortedMassive = [];                                     // a new massive to sort the prime numbers from massive
@@ -8,14 +8,14 @@ massive [0] = 2;                                            // number 2 is not g
 
 while(number !== 'exit'){
     for(currentNumber = 3; primeNumberQuantity < number; currentNumber++){  // passing through every number to check untill we find enough prime numbers
-        flag = true;                                                        // number is prime unless the next loop changes the answer 
-        for(var i=2; i < currentNumber / 2; i++){                           // i is the divider
+        isPrime = true;                                                        // number is prime unless the next loop changes the answer 
+        for(var i = 2; i < currentNumber / 2; i++){                           // i is the divider
             if(currentNumber % i === 0){                                    // if a number completely divides to a number (2,number/2), it's not prime
-                flag = false;
+                isPrime = false;
                 break;
             }
         }
-        if(flag){
+        if(isPrime){
             massive[primeNumberQuantity++] = currentNumber;
         }
     }
