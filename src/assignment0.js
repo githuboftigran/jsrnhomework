@@ -1,6 +1,6 @@
 for (; ;) {
     var num = prompt('Enter a natural number or "exit"');
-    if (num === "exit") {
+    if (num === 'exit') {
         break;
     }
     if (num < 1) {
@@ -28,7 +28,7 @@ for (; ;) {
     var answer = "";
     for (var k = 0; k < array.length; k++) {
         for (var l = 0; l < array[k].length; l++) {
-            answer += array[k][l] + " ";
+            answer += array[k][l] + ' ';
         }
     }
     console.log(answer);
