@@ -1,10 +1,10 @@
 for (; ;) {
     var num = prompt('Enter a natural number or "exit"');
     if (num === "exit") {
-        break
+        break;
     }
     if (num < 1) {
-        continue
+        continue;
     }
     var array = [[], [2], [], [], [], []];
     var isPrime = true;
