@@ -4,7 +4,7 @@ for (; ;) {
         break
     }
     if (num < 1) {
-        break
+        continue
     }
     var array = [[], [2], [], [], [], []];
     var isPrime = true;
