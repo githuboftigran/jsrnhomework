@@ -2,9 +2,9 @@ var num = prompt('Enter a natural number or "exit"');
 
 while (num !== 'exit') {
 
-    var count = 1;
-    var primeArr = [2];
-    var startPrimeNum = 3;
+    var count = 0;
+    var primeArr = [];
+    var startPrimeNum = 2;
 
     while (count < parseInt(num)) {
         var isPrime = true;
