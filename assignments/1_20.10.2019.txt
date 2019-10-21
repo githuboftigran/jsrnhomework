@@ -1,0 +1,57 @@
+First of all!
+You will find some strange code in assignment1.js file.
+All your code should be added after line: const context = canvas.getContext('2d');
+Don't ask why or what is that for now, just add code in that strange function, I will talk about it next week.
+
+Assignment!
+
+A string encoded shape descriptors list will be given to app.
+There are only 3 valid shapes: circle, rectangle (rect) and triangle.
+Each of them have their own properties.
+Some properties (like color) are common, some properties are not.
+
+Example:
+const descriptors = 'shape:circle/center:120,310/radius:52/velocity:4,2/color:#729|shape:rect/center:256,128/width:78/height:154/velocity:2,3/color:#abb|shape:triangle/center:340,389/length:64/velocity:7,1/color:#926';
+
+As you can see, shape descriptors are separated by bitwise OR symbol ( | ), so here you can find 3 shape descriptors:
+
+shape:circle/center:120,310/radius:52/velocity:4,2/color:#729
+shape:rect/center:256,128/width:78/height:154/velocity:2,3/color:#abb
+shape:triangle/center:340,389/length:64/velocity:7,1/color:#926
+
+Descriptor properties are separated by slashes ( / )
+'shape' and 'center' properties are mandatory for descriptors, while the other are not and have default values.
+Default value for color is black, default value for all sizes is 10 and for velocity is 2, 2.
+
+Here in examples, shape is the first property and color is the last property, but this is not fixed.
+In fact, properties may appear in any order.
+For example this one is a valid analog of the circle above:
+center:120,310 /shape : circle   / color: #729/radius  :52/velocity:2 ,3
+As you can see, spaces are also allowed.
+
+!!! Achtung, there may be invalid shapes !!!
+For example shape can be an invalid value or not defined at all or center may be missed.
+shape:yoyoyo/center:120,310/radius:52/color:#729/velocity:2,3
+or
+shape:circle/radius:52/color:#729/velocity:2,3
+So!
+
+The task is to take this kind of string, parse it to objects and draw them on canvas in  with given color, sizes.
+Invalid descriptors should be ignored.
+
+Velocity!
+Velocity property is the initial velocity of the shape, for example velocity:2,3 means the shape should move with vx = 2 and vy = y horizontal and vertical velocities.
+In this case that's SSE (south-south-east) direction.
+When shapes reach canvas edges, they should bounce and change direction.
+This is a very nice example of this kind of animation:
+https://thumbs.gfycat.com/JointShadyCapybara-max-1mb.gif
+
+Read about setInterval function here:
+https://www.w3schools.com/jsref/met_win_setinterval.asp
+
+Animation should have 60fps (1000 / 60 as the second argument of setInterval).
+
+For this time we have only 3 kinds of shapes, but try to write generic code, so adding new shapes (like square or oval) in future will be easy.
+You can find HTML5 canvas tutorials, documentation and other useful stuff in misc/useful_links.txt file.
+
+May the Force be with you!
