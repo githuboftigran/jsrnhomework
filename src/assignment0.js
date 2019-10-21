@@ -20,7 +20,7 @@ for( ; ; ) {
             correctArray[correctArray.length] = i;
         }
     }
-    var result = ""
+    var result = '';
     for (var i = 0; i < 6; i++) {
         for (var j = 0; j < primesArray[i].length; j++) {
             result += primesArray[i][j] + " "
