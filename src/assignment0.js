@@ -1,36 +1,36 @@
-var num = parseInt(prompt('Enter a number please :)'));
+var num = prompt('Enter a natural number or "exit"');
 
-var c = 1;
-var numArr = [2];
-var i = 3;
+while (num !== 'exit') {
 
-function number(k) {
-    for (var j = 2; j < k; j++) {
-        if (k % j === 0) {
-            return false;
+    var count = 0;
+    var primeArr = [];
+    var startPrimeNum = 2;
+
+    while (count < parseInt(num)) {
+        var isPrime = true;
+        for (j = 2; j < startPrimeNum; j++) {
+            if (startPrimeNum % j === 0) {
+                isPrime = false;
+            }
+        }
+
+        if (isPrime) {
+            primeArr[count] = startPrimeNum;
+            count++;
+        }
+        startPrimeNum++;
+    }
+
+    for (var i = 0; i < primeArr.length - 1; i++) {
+        for (var j = 0; j < primeArr.length - 1; j++) {
+            if ((primeArr[j] % 10) > (primeArr[j + 1] % 10)) {
+                var sort = primeArr[j];
+                primeArr[j] = primeArr[j + 1];
+                primeArr[j + 1] = sort;
+            }
         }
     }
-    return true;
+
+    console.log(primeArr);
+    num = prompt('Enter a natural number or "exit"');
 }
-
-while (c < num) {
-    if (number(i)) {
-        numArr[c] = i;
-        c++;
-    }
-    i++;
-}
-
-
-for (let i = 0; i < numArr.length - 1; i++) {
-    for (var j = 0; j < numArr.length - 1; j++) {
-        if ((numArr[j] % 10) > (numArr[j + 1] % 10)) {
-            let c = numArr[j];
-            numArr[j] = numArr[j + 1];
-            numArr[j + 1] = c;
-        }
-    }
-
-}
-
-console.log(numArr);
