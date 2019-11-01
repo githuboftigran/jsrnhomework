@@ -1,0 +1,32 @@
+W3Schools. Light JS lessons
+https://www.w3schools.com/js/default.asp
+
+You don'w know JS books: deep JS lessons
+https://github.com/getify/You-Dont-Know-JS/tree/1st-ed
+
+Online JS editor
+https://jsfiddle.net/
+
+Git official documentation (Book)
+https://git-scm.com/book/en/v2
+
+Homework repository
+https://github.com/githuboftigran/jsrnhomework
+
+Webstorm
+https://www.jetbrains.com/webstorm/
+
+VSCode
+https://code.visualstudio.com/
+
+Array functions
+https://www.w3schools.com/js/js_array_methods.asp
+
+String functions
+https://www.w3schools.com/jsref/jsref_obj_string.asp
+
+HTML5 canvas documentation:
+https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API
+
+HTML5 canvas tutorial:
+https://www.tutorialspoint.com/html5/html5_canvas.htm
