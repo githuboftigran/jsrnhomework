@@ -33,16 +33,12 @@ function parseFigure(string) {
             this.velocity[index] = -this.velocity[index];
         },
         checkIfContainsAndChangeDirection: function (width, height) {
-            let contains = true;
             if (!this.containsX(width)) {
-                contains = false;
                 this.changeDirection(0);
             }
             if (!this.containsY(height)) {
-                contains = false;
                 this.changeDirection(1);
             }
-            return contains;
         },
     };
     string.split('/').forEach((value) => {
