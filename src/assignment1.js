@@ -6,7 +6,10 @@ window.onload = function () {
     const context = canvas.getContext('2d');
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
-    const figures = parseFigures('shape:circle/center:120,310/radius:100/velocity:4,2/color:#a729|shape:rect/center:256,128/width:78/height:154/velocity:2,3/color:#a338|shape:triangle/center:340,389/length:150/velocity:7,1/color:#619a');
+    const figures = parseFigures(
+        'shape:circle/center:120,310/radius:100/velocity:4,2/color:#a729' +
+        '|shape:rect/center:256,128/width:78/height:154/velocity:2,3/color:#a338' +
+        '|shape:triangle/center:340,389/length:150/velocity:7,1/color:#619a');
     window.setInterval(function () {
         context.clearRect(0, 0, canvas.width, canvas.height);
         figures.forEach((value) => {
@@ -45,6 +48,9 @@ function parseFigure(string) {
 function addSpecifics(figure) {
     switch (figure.shape) {
         case 'triangle':
+            if (figure.length === undefined) {
+                figure.length = 10;
+            }
             figure.draw = function (context) {
                 context.fillStyle = this.color;
                 const height = sin60 * this.length;
@@ -65,6 +71,12 @@ function addSpecifics(figure) {
             };
             break;
         case 'rect':
+            if (figure.width === undefined) {
+                figure.width = 10;
+            }
+            if (figure.height === undefined) {
+                figure.height = 10;
+            }
             figure.draw = function (context) {
                 context.fillStyle = this.color;
                 context.fillRect(this.center[0] - (this.width / 2), this.center[1] - (this.height / 2), this.width, this.height);
@@ -79,6 +91,9 @@ function addSpecifics(figure) {
             };
             break;
         case 'circle':
+            if (figure.radius === undefined) {
+                figure.radius = 10;
+            }
             figure.draw = function (context) {
                 context.beginPath();
                 context.fillStyle = this.color;
