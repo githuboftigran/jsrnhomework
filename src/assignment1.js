@@ -7,9 +7,12 @@ window.onload = function () {
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
     const figures = parseFigures(
-        'shape:circle/center:120,310/radius:100/velocity:4,2/color:#64ba' +
+        'shape:circle/center:120,310/radius:100/velocity:1,2/color:#64ba' +
         '|shape:rect/center:256,128/width:78/height:154/velocity:2,3/color:#338a' +
-        '|shape:triangle/center:340,389/length:150/velocity:7,1/color:#19a6');
+        '|shape:triangle/center:340,389/length:180/velocity:7,1/color:#19a6' +
+        '|shape:circle/center:500,500/radius:70/velocity:-4,-6/color:#b1ba' +
+        '|shape:rect/center:200,128/width:100/height:84/velocity:2,-4/color:#344a' +
+        '|shape:triangle/center:340,389/length:150/velocity:7,10/color:#49f6');
     window.setInterval(function () {
         context.clearRect(0, 0, canvas.width, canvas.height);
         figures.forEach((value) => {
