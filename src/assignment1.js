@@ -16,11 +16,11 @@ window.onload = function () {
         .filter((value) => value && value.containsX(width) && value.containsY(height));
     window.setInterval(function () {
         context.clearRect(0, 0, canvas.width, canvas.height);
-        figures.forEach((value) => {
-            value.draw(context);
-            value.center[0] += value.velocity[0];
-            value.center[1] += value.velocity[1];
-            value.checkIfContainsAndChangeDirection(width, height);
+        figures.forEach((figure) => {
+            figure.draw(context);
+            figure.center[0] += figure.velocity[0];
+            figure.center[1] += figure.velocity[1];
+            figure.checkIfContainsAndChangeDirection(width, height);
         });
     }, 50 / 3);
 };
