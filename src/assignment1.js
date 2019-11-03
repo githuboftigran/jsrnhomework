@@ -15,7 +15,7 @@ window.onload = function () {
         .split(' ').join('').split('|').map((value) => parseFigure(value))
         .filter((value) => value && value.containsX(width) && value.containsY(height));
     window.setInterval(function () {
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.clearRect(0, 0, width, height);
         figures.forEach((figure) => {
             figure.draw(context);
             figure.center[0] += figure.velocity[0];
