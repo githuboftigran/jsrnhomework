@@ -88,47 +88,38 @@ window.onload = function () {
 
 
     function draw(context) {
+
         return getObjects().forEach(item => {
-            switch (item.shape) {
-                case 'circle':
-                    context.beginPath();
-                    context.arc(item.x, item.y, item.radius, 0, Math.PI * 2);
-                    context.fillStyle = item.color;
-                    break;
-                case'rect':
-                    context.beginPath();
-                    context.fillRect(item.x - item.width / 2, item.y - item.height / 2, item.width, item.height);
-                    context.fillStyle = item.color;
-                    break;
-                case 'triangle':
-                    const height = item.size * SQRT_3 / 2;
-                    const topX = item.x;
-                    const topY = item.y - height * 2 / 3;
-                    context.beginPath();
-                    context.moveTo(topX, topY);
-                    context.lineTo(topX + item.size / 2, topY + height);
-                    context.lineTo(topX - item.size / 2, topY + height);
-                    context.lineTo(topX, topY);
-                    context.fillStyle = item.color;
-                    break;
+                switch (item.shape) {
+                    case 'circle':
+                        context.beginPath();
+                        context.fillStyle = item.color;
+                        context.arc(item.center[0], item.center[1], item.radius, 0, Math.PI * 2);
+
+
+                        context.fill();
+                        break;
+                    case'rect':
+                        context.beginPath();
+                        context.fillStyle = item.color;
+                        context.fillRect(item.center[0] - item.width / 2, item.center[1] - item.height / 2, item.width, item.height);
+
+                        break;
+                    case 'triangle':
+                        const height = item.size * SQRT_3 / 2;
+                        const topX = item.center[0];
+                        const topY = item.center[1] - height * 2 / 3;
+                        context.beginPath();
+                        context.fillStyle = item.color;
+                        context.moveTo(topX, topY);
+                        context.lineTo(topX + item.size / 2, topY + height);
+                        context.lineTo(topX - item.size / 2, topY + height);
+                        context.lineTo(topX, topY);
+                        context.fill();
+                        break;
+                }
             }
-        });
+        );
     }
-
     draw(context);
-
-    setInterval(() => {
-        getObjects().forEach(item => {
-            item.x += item.vx;
-            item.y += item.vy;
-
-            if (item.y + item.vy > canvas.height || item.y + item.vy < 0) {
-                item.vy = -item.vy;
-            }
-            if (item.x + item.vx > canvas.width || item.x + item.vx < 0) {
-                item.vx = -item.vx;
-            }
-            draw(context);
-        })
-    }, 1000 / 60)
 };
