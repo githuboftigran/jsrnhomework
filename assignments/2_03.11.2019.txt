@@ -1,0 +1,12 @@
+At this time you don't need to create a new js file, just update asignment1.js.
+Create functions for each shape type (Rect, Circle, Triangle) and these functions should be responsible for descriptor deserializing.
+Create another function parseShape(descriptor).
+It should take the descriptor, determine the shape, call appropriate shape function with new operator and return the result.
+
+Note: shapes have lot of common stuff so make sure there are no code copies.
+Refactored assignment 1 code is in branch: assignment1 (not completed).
+
+Here you can find our drafts:
+https://jsfiddle.net/f8sd9075/
+
+May the Force be with you!
