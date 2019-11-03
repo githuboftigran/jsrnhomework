@@ -12,11 +12,11 @@ window.onload = function () {
         '|shape:circle/center:500,500/radius:70/velocity:-4,-6/color:#b1b1' +
         '|shape:rect/center:200,128/width:100/height:84/velocity:2,-4/color:#3441' +
         '|shape:triangle/center:340,389/length:150/velocity:7,10/color:#49f1')
-        .split(' ').join('').split('|').map((value) => parseFigure(value))
-        .filter((value) => value && value.containsX(width) && value.containsY(height));
+        .replace(/\s/g, '').split('|').map(value => parseFigure(value))
+        .filter(value => value && value.containsX(width) && value.containsY(height));
     window.setInterval(function () {
         context.clearRect(0, 0, width, height);
-        figures.forEach((figure) => {
+        figures.forEach(figure => {
             figure.draw(context);
             figure.center[0] += figure.velocity[0];
             figure.center[1] += figure.velocity[1];
@@ -25,7 +25,7 @@ window.onload = function () {
     }, 50 / 3);
 };
 
-function parseFigure(string) {
+function parseFigure(rawString) {
     const figure = {
         color: '#000',
         velocity: [2, 2],
@@ -41,13 +41,13 @@ function parseFigure(string) {
             }
         },
     };
-    string.split('/').forEach((value) => {
+    rawString.split('/').forEach(value => {
         const pair = value.split(':');
         figure[pair[0]] = pair[0] === 'shape' || pair[0] === 'color' ? pair[1] : pair[1].includes(',') ?
-            pair[1].split(',').map((stringValue) => parseInt(stringValue)) : parseInt(pair[1]);
+            pair[1].split(',').map(stringValue => parseInt(stringValue)) : parseInt(pair[1]);
     });
     if (!validShapes.includes(figure.shape) || figure.center === undefined) {
-        return false;
+        return;
     }
     addSpecifics(figure);
     return figure;
@@ -56,7 +56,7 @@ function parseFigure(string) {
 function addSpecifics(figure) {
     switch (figure.shape) {
         case 'triangle':
-            if (figure.length === undefined) {
+            if (!figure.length) {
                 figure.length = 10;
             }
             figure.draw = function (context) {
@@ -77,10 +77,10 @@ function addSpecifics(figure) {
             };
             break;
         case 'rect':
-            if (figure.width === undefined) {
+            if (!figure.width) {
                 figure.width = 10;
             }
-            if (figure.height === undefined) {
+            if (!figure.height) {
                 figure.height = 10;
             }
             figure.draw = function (context) {
@@ -95,7 +95,7 @@ function addSpecifics(figure) {
             };
             break;
         case 'circle':
-            if (figure.radius === undefined) {
+            if (!figure.radius) {
                 figure.radius = 10;
             }
             figure.draw = function (context) {
