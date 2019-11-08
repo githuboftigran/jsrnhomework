@@ -36,7 +36,7 @@ function parseFigure(rawString) {
     }
     params.forEach(value => {
         const pair = value.split(':');
-        figure[pair[0]] = pair[0] === 'shape' || pair[0] === 'color' ? pair[1] : pair[1].includes(',') ?
+        figure[pair[0]] = pair[0] === 'color' ? pair[1] : pair[1].includes(',') ?
             pair[1].split(',').map(stringValue => parseInt(stringValue)) : parseInt(pair[1]);
     });
     if (figure.center === undefined) {
