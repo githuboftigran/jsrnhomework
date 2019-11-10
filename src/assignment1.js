@@ -1,6 +1,5 @@
 window.onload = function () {
     const SQRT_3 = Math.sqrt(3);
-
     const canvas = document.getElementById('mainDrawingCanvas');
     const context = canvas.getContext('2d');
 
@@ -19,107 +18,106 @@ window.onload = function () {
     //velocity:2,3					//color:#926
     //color:#abb
 
-    //create objects of shapes
-    function getObjects() {
-        return descriptors.split('|').map(params => {
-            return params.trim().split('/').reduce((object, value) => {
-                const paramValues = value.trim().split(':');
-                object[paramValues[0].trim()] = paramValues[1].trim();
-                return object;
-            }, {});
-        }).filter(item => {
-            // return true item is valid
-            return item.hasOwnProperty('shape') && item.hasOwnProperty('center') &&
-                (item.shape === 'circle' || item.shape === 'triangle' || item.shape === 'rect');
+    //create objects from the string
+    const shapes = descriptors.split('|').map(params => {
+        return params.trim().split('/').reduce((object, value) => {
+            const paramValues = value.trim().split(':');
+            object[paramValues[0].trim()] = paramValues[1].trim();
+            return object;
+        }, {});
+    }).filter(item => {
+        // return valid items
+        return item.shape && item.center && (item.shape === 'circle' || item.shape === 'triangle' || item.shape === 'rect');
+    });
+
+    function GeneralParameters() {
+        return shapes.map(item => {
+            this.shape = item.shape;
+            this.x = Number(item.center.split(',')[0]);
+            this.y = Number(item.center.split(',')[1]);
+            this.color = item.color;
+            this.vx = Number(item.velocity.split(',')[0]);
+            this.vy = Number(item.velocity.split(',')[1]);
+            return this;
+        });
+    }
+
+    function Circle() {
+        shapes.filter(item => {
+            return item.shape === 'circle';
         }).map(item => {
-                // return new item with proper values
-                return Object.entries(item).reduce((item, value) => {
-                    if (isNaN(value[1])) {
-                        if (!isNaN(value[1].split(',')[0]) && !isNaN(value[1].split(',')[1])) {
-                            switch (value[0]) {
-                                case 'center':
-                                    let x = Number(value[1].split(',')[0]);
-                                    let y = Number(value[1].split(',')[1]);
-                                    item[value[0]] = [x, y];
-                                    break;
-                                case 'velocity':
-                                    let vx = Number(value[1].split(',')[0]);
-                                    let vy = Number(value[1].split(',')[1]);
-                                    item[value[0]] = [vx, vy];
-                                    break;
-                            }
-                        } else {
-                            item[value[0]] = value[1];
-                        }
-                    } else {
-                        item[value[0]] = Number(value[1]);
-                    }
-                    if (item.hasOwnProperty('velocity') === false) {
-                        item['velocity'] = [2, 2];
-                    }
-                    if (item.hasOwnProperty('color') === false) {
-                        item['color'] = '#000000';
-                    }
-                    switch (value[1]) {
-                        case 'circle':
-                            if (item.hasOwnProperty('radius') === false) {
-                                item['radius'] = 10;
-                            }
-                            break;
-                        case 'rect':
-                            if (item.hasOwnProperty('height') === false) {
-                                item['height'] = 10;
-                            }
-                            if (item.hasOwnProperty('width') === false) {
-                                item['width'] = 10;
-                            }
-                            break;
-                        case 'triangle':
-                            if (item.hasOwnProperty('size') === false) {
-                                item['size'] = 10;
-                            }
-                            break;
-                    }
-                    return item;
-                }, {});
+            GeneralParameters.call(this);
+
+            this.radius = Number(item.radius);
+            this.draw = context2d => {
+                context2d.beginPath();
+                context2d.fillStyle = this.color;
+                context2d.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                context2d.fill();
             }
-        );
+        });
+    }
+
+    function Rect() {
+        shapes.filter(item => {
+            return item.shape === 'rect';
+        }).map(item => {
+            GeneralParameters.call(this);
+            this.height = Number(item.height);
+            this.width = Number(item.width);
+            this.draw = context2d => {
+                context2d.beginPath();
+                context2d.fillStyle = this.color;
+                context2d.fillRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+            }
+        });
     }
 
 
-    function draw(context) {
-
-        return getObjects().forEach(item => {
-                switch (item.shape) {
-                    case 'circle':
-                        context.beginPath();
-                        context.fillStyle = item.color;
-                        context.arc(item.center[0], item.center[1], item.radius, 0, Math.PI * 2);
-
-
-                        context.fill();
-                        break;
-                    case'rect':
-                        context.beginPath();
-                        context.fillStyle = item.color;
-                        context.fillRect(item.center[0] - item.width / 2, item.center[1] - item.height / 2, item.width, item.height);
-
-                        break;
-                    case 'triangle':
-                        const height = item.size * SQRT_3 / 2;
-                        const topX = item.center[0];
-                        const topY = item.center[1] - height * 2 / 3;
-                        context.beginPath();
-                        context.fillStyle = item.color;
-                        context.moveTo(topX, topY);
-                        context.lineTo(topX + item.size / 2, topY + height);
-                        context.lineTo(topX - item.size / 2, topY + height);
-                        context.lineTo(topX, topY);
-                        context.fill();
-                        break;
-                }
+    function Triangle() {
+        shapes.filter(item => {
+            return item.shape === 'triangle';
+        }).map(item => {
+            GeneralParameters.call(this);
+            this.size = Number(item.size);
+            this.draw = context2d => {
+                const height = this.size * SQRT_3 / 2;
+                const topX = this.x;
+                const topY = this.y - height * 2 / 3;
+                context2d.beginPath();
+                context2d.fillStyle = this.color;
+                context2d.moveTo(topX, topY);
+                context2d.lineTo(topX + this.size / 2, topY + height);
+                context2d.lineTo(topX - this.size / 2, topY + height);
+                context2d.lineTo(topX, topY);
+                context2d.fill();
             }
-        );
+        });
     }
-    draw(context);
+
+    const parseShapes = shapes.map(item => {
+        switch (item.shape) {
+            case 'circle':
+                return new Circle();
+            case 'rect':
+                return new Rect();
+            case 'triangle':
+                return new Triangle();
+        }
+    });
+
+    setInterval(function () {
+        context.clearRect(0, 0, 600, 600);
+        parseShapes.forEach(item => {
+            item.x += item.vx;
+            item.y += item.vy;
+            if (item.x + item.vx < 0 || item.x + item.vx > canvas.width) {
+                item.vx = -item.vx;
+            }
+            if (item.y + item.vy < 0 || item.y + item.vy > canvas.height) {
+                item.vy = -item.vy;
+            }
+            item.draw(context);
+        });
+    }, 1000 / 60);
 };
