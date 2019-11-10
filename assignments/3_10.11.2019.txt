@@ -1,0 +1,28 @@
+In this directory you can find an html file: game.html.
+If you open it in browser you will see a space with many color balls.
+Click once at any point and a chain reaction will begin.
+When a ball touches exploding area it stops and explodes giving some points depending on the previous area's points it touched.
+
+First explosion (user's click) gives 10 points. All balls touching that area will explode and give 10 * 1.6 = 16 points.
+All balls touching second chain of explosion will give 16 * 1.6 = 25.6 (~26) points, etc.
+So if a ball touches exploding area with X points, it gives Math.round(X * 1.6) points.
+Explosion lasts 3 seconds and exploded area fades out during that time.
+Exploding process (ball resizing) should last 500 milliseconds.
+Game ends, when all exploded areas are gone.
+Reset button should reset the score and start a new game.
+
+Velocities of balls should be equal but initial positions and velocity directions should be random.
+
+Please don't copy code from this game.html file, as it's written in 2012 and in a really bad way.
+This file is just for demonstration, not for copying.
+
+You can find a few lines of code in assignment3.js file.
+
+At line 8, an arrow function is passed to addEventListener.
+That function will be called every time user clicks canvas.
+Parameter `event` contains click's coordinates (offsetX, offsetY).
+
+At line 13 an arrow function is set to resetButton's onclick.
+This function will be called every time user clicks reset button.
+
+May the Force be with you!
