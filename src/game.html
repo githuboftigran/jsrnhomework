@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+        <script src =" https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <style>
+            #main-canvas {
+                display: block;
+                border: solid #9C9C9C 2px;
+                border-radius: 3px;
+                background-color: #606060;
+            }
+            #score-span {
+                font-size: 50px;
+
+            }
+            body{
+                background-color: #222;
+            }
+        </style>
+		<script>
+
+            var circlesCount = 80;
+            var criticalAreas = new Array();
+            var explosionTime = 3000;
+            var growSpeed = 100;
+            var exploseRadius = 60;
+            var gameStarted = false;
+            var scoreGrow = 1.6;
+            var score = 0;
+            var scoreSpan;
+
+            window.requestAnimFrame = (function(callback){
+                return window.requestAnimationFrame ||
+                        window.webkitRequestAnimationFrame ||
+                        window.mozRequestAnimationFrame ||
+                        window.oRequestAnimationFrame ||
+                        window.msRequestAnimationFrame ||
+                        function(callback){
+                            window.setTimeout(callback, 1000 / 60);
+                        };
+            })();
+
+            function moveStep(circles, gameCanvas, currentTime, lastTime)
+            {
+
+                var context = gameCanvas.getContext("2d");
+
+
+                var w = gameCanvas.width;
+                var h = gameCanvas.height;
+
+                var timeDiff = (currentTime - lastTime) / 1000;     //as seconds, not milliseconds
+
+                for(c in circles)
+                {
+                    var circle = circles[c];
+                    var cW = w - circle.r;	//current width: circles should not cross borders
+                    var cH = h - circle.r;	//current heigth:
+
+                    circle.x += timeDiff * circle.speedX;
+                    if(circle.x - circle.r < 0)
+                    {
+                        circle.x = -circle.x + 2*circle.r;
+                        circle.speedX = -circle.speedX;
+                    }
+                    else if(circle.x > cW)
+                    {
+                        circle.x = 2*cW - circle.x;
+                        circle.speedX = -circle.speedX;
+                    }
+
+                    circle.y += timeDiff * circle.speedY;
+                    if(circle.y - circle.r < 0)
+                    {
+                        circle.y = -circle.y + 2*circle.r;
+                        circle.speedY = -circle.speedY;
+                    }
+                    else if(circle.y > cH)
+                    {
+                        circle.y = 2*cH - circle.y;
+                        circle.speedY = -circle.speedY;
+                    }
+
+
+                    var i;
+                    for(i in criticalAreas)
+                    {
+                        var x1 = circle.x;
+                        var y1 = circle.y;
+                        var r1 = circle.r;
+
+                        var x2 = criticalAreas[i].x;
+                        var y2 = criticalAreas[i].y;
+                        var r2 = criticalAreas[i].r;
+
+                        if((x1-x2) * (x1-x2) + (y1-y2) * (y1-y2) <= (r1+r2) * (r1+r2))
+                        {
+                            criticalAreas.push(
+                                    {
+                                        x: x1,
+                                        y: y1,
+                                        r: circle.r,
+                                        color: circle.color,
+                                        time: new Date().getTime(),
+                                        value: criticalAreas[i].value * scoreGrow
+                                    }
+                            );
+
+                            score += criticalAreas[i].value * scoreGrow;
+
+                            scoreSpan.innerHTML = Math.floor(score);
+
+                            delete circles[c];
+                            break;
+                        }
+                    }
+
+                    context.beginPath();
+                    context.strokeStyle = circle.color;
+                    context.fillStyle = circle.color;
+                    context.arc(circle.x, circle.y, circle.r, 0, Math.PI * 2, true);
+                    context.fill();
+                    context.stroke();
+                }
+
+                return circles;
+            }
+
+            /*function endGame(circles, gameCanvas, lastTime)
+            {
+
+                var context = gameCanvas.getContext()
+                requestAnimFrame(function(){
+                    endGame(circles, gameCanvas, lastTime);
+                });
+            }*/
+
+
+			function flyCircles(circles, canvasID, lastTime)
+			{
+				var gameCanvas = document.getElementById(canvasID);
+				var context = gameCanvas.getContext("2d");
+
+                context.globalAlpha = 1;
+                context.beginPath();
+                context.lineWidth = 1;
+                context.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+                var currentTime = new Date().getTime();
+
+                moveStep(circles, gameCanvas, currentTime, lastTime);
+
+                context.font = "20pt Calibri";
+                context.textAlign = 'center';
+                context.textBaseline = 'middle';
+
+                var isEmpty = true;
+                for(ca in criticalAreas)
+                {
+                    isEmpty=false;
+                    var cArea = criticalAreas[ca];
+
+                    var now = new Date().getTime();
+
+                    if(cArea.r < exploseRadius)
+                        criticalAreas[ca].r += growSpeed * (now - lastTime)/1000;
+                    else if(cArea.r > exploseRadius)
+                        cArea.r = exploseRadius;
+
+                    if(now - cArea.time > explosionTime)
+                    {
+                        delete criticalAreas[ca];
+                        continue;
+                    }
+
+                    context.beginPath();
+
+                    context.lineWidth = 0;
+                    context.fillStyle = cArea.color;
+                    context.strokeStyle = cArea.color;
+                    context.globalAlpha = (explosionTime - now + cArea.time) * 1.0 / explosionTime;
+
+                    context.arc(cArea.x, cArea.y, cArea.r, 0, Math.PI * 2, true);
+                    context.fill();
+                    context.stroke();
+
+                }
+
+
+                for(ca in criticalAreas)
+                {
+                    var cArea = criticalAreas[ca];
+                    context.globalAlpha = (explosionTime - now + cArea.time) * 1.0 / explosionTime;
+                    context.beginPath();
+                    context.fillStyle = "black";
+                    context.fillText(Math.floor(cArea.value), cArea.x, cArea.y);
+                    context.stroke();
+                }
+
+                if(isEmpty && gameStarted)
+                 {
+                     context.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+                     context.font = "40pt Comic Sans MS"
+                     context.fillStyle = "#DA0";
+                     context.fillText(Math.floor(score) , gameCanvas.width/2, gameCanvas.height /2);
+                     return;
+                 }
+
+
+                requestAnimFrame(function(){
+                    flyCircles(circles, canvasID, currentTime);
+                });
+			};
+
+            $(function() {
+
+                scoreSpan = document.getElementById("score-span");
+                $("#main-canvas").click(function (e) {
+
+                    if(gameStarted)
+                        return;
+
+                    gameStarted = true;
+                    
+                    criticalAreas.push(
+                            {
+                                x: e.offsetX,
+                                y: e.offsetY,
+                                r: 0,
+                                color: "#EEE",
+                                time: new Date().getTime(),
+                                value: 10
+                            }
+                    );
+                    score += 10;
+
+                    scoreSpan.innerHTML = Math.floor(score);
+                });
+
+
+                var i;
+                var circles = new Array();
+
+                var tempCanvas = document.getElementById("main-canvas");
+                var w = tempCanvas.width;
+                var h = tempCanvas.height;
+
+                for(i=0; i < circlesCount; i++)
+                {
+                    var radius = 8;
+                    var xC = radius + Math.floor(Math.random() * (w - 2*radius));
+                    var yC = radius + Math.floor(Math.random() * (h - 2*radius));
+
+                    var sMod = 100;
+
+                    var sX = -sMod + Math.random() * 2 * sMod;
+                    var plusMinus = Math.random() > 0.5 ? 1 : -1;
+                    var sY = plusMinus * Math.sqrt(sMod * sMod - sX * sX);
+
+                    circles[i] = {
+
+                        x: xC,
+                        y: yC,
+                        speedX: sX,
+                        speedY: sY,
+                        color: "#" + (0x100000 + Math.floor(0x999999 + Math.random() * 0x666666)).toString(16),
+                        r: radius
+
+                    };
+                }
+                var secs = new Date().getTime();
+                flyCircles(circles, "main-canvas", secs);
+
+            });
+
+		</script>
+
+	</head>
+	<body>
+        <div align="center">
+            <span id="score-span">0</span>
+    		<canvas id="main-canvas" draggable="false" width="1200" height="800"></canvas>
+        </div>
+
+		
+	</body>
+</html>
