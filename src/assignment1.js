@@ -28,53 +28,39 @@ window.onload = function () {
 };
 
 //note: the first param should be shape for better code :)
-function parseFigure(rawString) {
-    const params = rawString.split('/');
-    const figure = getDefaultFigureByType(params.splice(SHAPE_INDEX, 1)[0].split(':'));
-    if (!figure) {
-        return;
-    }
-    params.forEach(value => {
-        const pair = value.split(':');
-        figure[pair[0]] = pair[0] === 'color' ? pair[1] : pair[1].includes(',') ?
-            pair[1].split(',').map(stringValue => parseInt(stringValue)) : parseInt(pair[1]);
-    });
-    if (figure.center === undefined) {
-        return;
-    }
-    return figure;
-}
-
-function getDefaultFigureByType(pair) {
+function parseFigure(descriptor) {
+    const params = descriptor.split('/');
+    const pair = params.splice(SHAPE_INDEX, 1)[0].split(':');
     if (pair[0] !== 'shape') {
         return;
     }
     let figure;
     switch (pair[1]) {
         case validShapes[TRIANGLE]:
-            figure = new Triangle();
+            figure = new Triangle(params);
             break;
         case validShapes[RECT]:
-            figure = new Rect();
+            figure = new Rect(params);
             break;
         case validShapes[CIRCLE]:
-            figure = new Circle();
+            figure = new Circle(params);
             break;
         default:
             return;
     }
-    figure.shape = pair[1];
-    addCommonDefaults(figure);
+    if (!figure.center) {
+        return;
+    }
     return figure;
 }
 
-function addCommonDefaults(figure) {
-    figure.color = '#000';
-    figure.velocity = [2, 2];
-    figure.changeDirection = function (index) {
+function Shape(params) {
+    this.color = '#000';
+    this.velocity = [2, 2];
+    this.changeDirection = index => {
         this.velocity[index] = -this.velocity[index];
     };
-    figure.move = function (width, height) {
+    this.move = (width, height) => {
         this.center[0] += this.velocity[0];
         this.center[1] += this.velocity[1];
         if (!this.containsX(width)) {
@@ -84,9 +70,15 @@ function addCommonDefaults(figure) {
             this.changeDirection(1);
         }
     };
+    params.forEach(value => {
+        const pair = value.split(':');
+        this[pair[0]] = pair[0] === 'color' ? pair[1] : pair[1].includes(',') ?
+            pair[1].split(',').map(stringValue => parseInt(stringValue)) : parseInt(pair[1]);
+    });
 }
 
-function Circle() {
+function Circle(params) {
+    this.shape = validShapes[CIRCLE];
     this.radius = 10;
     this.draw = context => {
         context.beginPath();
@@ -100,9 +92,11 @@ function Circle() {
     this.containsY = height => {
         return !(this.center[1] - this.radius <= 0 || this.center[1] + this.radius >= height);
     };
+    Shape.call(this, params);
 }
 
-function Rect() {
+function Rect(params) {
+    this.shape = validShapes[RECT];
     this.width = 10;
     this.height = 10;
 
@@ -116,9 +110,11 @@ function Rect() {
     this.containsY = height => {
         return !(this.center[1] - this.height / 2 <= 0 || this.center[1] + this.height / 2 >= height);
     };
+    Shape.call(this, params);
 }
 
-function Triangle() {
+function Triangle(params) {
+    this.shape = validShapes[TRIANGLE];
     this.length = 10;
     this.draw = context => {
         context.fillStyle = this.color;
@@ -136,4 +132,5 @@ function Triangle() {
     this.containsY = height => {
         return !(this.center[1] - 2 * sin60 * this.length / 3 <= 0 || this.center[1] + sin60 * this.length / 3 >= height);
     };
+    Shape.call(this, params);
 }
