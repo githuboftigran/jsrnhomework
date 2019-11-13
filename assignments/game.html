@@ -20,11 +20,11 @@
         </style>
 		<script>
 
-            var circlesCount = 80;
+            var circlesCount = 700;
             var criticalAreas = new Array();
-            var explosionTime = 3000;
+            var explosionTime = 4000;
             var growSpeed = 100;
-            var exploseRadius = 60;
+            var exploseRadius = 50;
             var gameStarted = false;
             var scoreGrow = 1.6;
             var score = 0;
@@ -194,7 +194,7 @@
                     context.globalAlpha = (explosionTime - now + cArea.time) * 1.0 / explosionTime;
                     context.beginPath();
                     context.fillStyle = "black";
-                    context.fillText(Math.floor(cArea.value), cArea.x, cArea.y);
+                    //context.fillText(Math.floor(cArea.value), cArea.x, cArea.y);
                     context.stroke();
                 }
 
@@ -204,7 +204,7 @@
 
                      context.font = "40pt Comic Sans MS"
                      context.fillStyle = "#DA0";
-                     context.fillText(Math.floor(score) , gameCanvas.width/2, gameCanvas.height /2);
+                     //context.fillText(Math.floor(score) , gameCanvas.width/2, gameCanvas.height /2);
                      return;
                  }
 
@@ -213,6 +213,23 @@
                     flyCircles(circles, canvasID, currentTime);
                 });
 			};
+
+			function getRandomColor() {
+
+				const r = 0xff;
+				const g =  Math.floor(Math.random() * 0xff);
+				const b = Math.floor(0x22 + Math.random() * 0x44);
+
+				/* for softer colors
+				const g =  Math.floor(0x55 + Math.random() * 0xaa);
+				const b = Math.floor(0x55 + Math.random() * 0x44);
+				*/
+
+				const shuffled = [r, g, b]
+						.sort(() => Math.random() - 0.5)
+						.reduce((acc, component) => acc + component.toString(16), '');
+				return `#${shuffled}`
+			}
 
             $(function() {
 
@@ -265,7 +282,7 @@
                         y: yC,
                         speedX: sX,
                         speedY: sY,
-                        color: "#" + (0x100000 + Math.floor(0x999999 + Math.random() * 0x666666)).toString(16),
+                        color: getRandomColor(),
                         r: radius
 
                     };
