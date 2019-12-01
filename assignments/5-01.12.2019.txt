@@ -1,0 +1,69 @@
+You can find a brand new react native project under src/JSReactApp directory.
+Before start, please read this page paying attention to lifecycle methods:
+https://reactjs.org/docs/state-and-lifecycle.html
+
+This is a JS library for http calls:
+https://github.com/axios/axios
+
+And this is a dummy REST API you can use to get, post data:
+https://jsonplaceholder.typicode.com/
+
+You will need posts, comments, users and photos resources.
+App should have a header part with 2 buttons: Back and Refresh.
+All the other stuff should be rendered below that header section.
+
+|   Back  |   Refresh   |
+-------------------------
+|                       |
+|                       |
+|                       |
+|                       |
+|                       |
+|                       |
+|                       |
+|                       |
+
+When user opens the app a get request should be made to fetch all posts:
+https://jsonplaceholder.typicode.com/posts
+
+Once all posts are loaded, they should be shown in a list (FlatList).
+Each post has a title and a body, so each list item should have 2 texts.
+The title should have bigger font size and bold style.
+To help user, posts with even index should have white background (#fff) and posts with odd index should have light grey background (#eee).
+
+When user clicks on a post item, posts should disappear and comments of that particular post should be fetched:
+https://jsonplaceholder.typicode.com/posts/3/comments
+See that number "3" just before /comments part? That's the post id.
+So making a GET request with the path above will give you comments array of post with id: 3 in response.
+Each comment has name, email and body.
+So a comment item should look like this:
+
+|Elon Musk              emusk@tesla.com |
+|                                       |
+|Some long speech about Mars, cars,     |
+|electricity, etc.                      |
+
+-----------------------------
+Back button
+
+Back button should be enabled (clickable and alive-looking) only when comments screen is shown.
+Click should take user back to posts screen.
+When posts screen is shown, back button should be disable (not clickable and greyish, so user understands it's not clickable).
+
+-----------------------------
+Refresh button
+
+When user clicks refresh button the screen should be refreshed, which means a new GET request should be made and a fresh data should be fetched from api.
+If user is in posts screen, refresh should fetch posts and update the list.
+If user is in comments screen, refresh should fetch comments and update the list.
+
+------------------------------
+While fetching data
+When a data is being fetched from the api, an ActivityIndicator should be shown just below the header part:
+https://facebook.github.io/react-native/docs/activityindicator
+No matter if the list already has some items (for example refresh button is clicked) or it's empty.
+ActivityIndicator should be shown ON TOP OF, not ABOVE the list.
+
+Try to write clean code and not to put everything together in 1 file.
+
+May the Force be with you!
