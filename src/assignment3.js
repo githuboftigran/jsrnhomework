@@ -12,19 +12,24 @@ window.onload = function () {
     const resetButton = document.getElementById('resetButton');
     resetButton.onclick = () => {
         context.clearRect(0, 0, canvas.width, canvas.height);
+        explodedBallsArray = [];
         gameState = false;
+        drawBalls();
     };
     const scoreSpan = document.getElementById('scoreSpan');
     const context = canvas.getContext('2d');
     let gameState = false;
     let explodedBallsArray = [];
     let ballsArray = [];
+
     // draw BALL_COUNT of balls
     if (!gameState) {
+        drawBalls();
+    }
+
+    function drawBalls() {
         for (let i = 0; i < BALL_COUNT; i += 1) {
-            if (!gameState) {
-                ballsArray[i] = new Ball();
-            }
+            ballsArray[i] = new Ball();
         }
     }
 
@@ -75,6 +80,7 @@ window.onload = function () {
         explodedBallsArray.push(firstExplosion);
         explosion(firstExplosion, EXPLODING_TIME);
         fadeColor(firstExplosion, EXPLOSION_FADE_TIME);
+        gameState = true;
     }
 
     explodedBallsArray.forEach(explodedBall => {
@@ -126,7 +132,8 @@ window.onload = function () {
             context.fill();
         };
     }
-};
+}
+;
 
 //state of balls at the explosion moment
 function explosion(circle, duration) {
