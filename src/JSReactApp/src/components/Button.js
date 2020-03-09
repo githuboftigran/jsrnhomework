@@ -24,11 +24,11 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 32,
     paddingHorizontal: 8,
-    backgroundColor: '#433',
+    backgroundColor: '#ec3aff',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 4,
-    borderColor: '#877',
+    borderColor: '#aa44ff',
   },
   content: {
     color: 'white',
