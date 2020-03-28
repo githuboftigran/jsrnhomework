@@ -12,30 +12,31 @@ window.onload = function () {
     const resetButton = document.getElementById('resetButton');
     resetButton.onclick = () => {
         context.clearRect(0, 0, canvas.width, canvas.height);
-        explodedBallsArray = [];
-        gameState = false;
-        drawBalls();
+        clearInterval(animateBallsInterval);
+        gameStarted = false;
+
     };
     const scoreSpan = document.getElementById('scoreSpan');
     const context = canvas.getContext('2d');
-    let gameState = false;
+    let gameStarted = false;
     let explodedBallsArray = [];
     let ballsArray = [];
+    let animateBallsInterval;
 
     // draw BALL_COUNT of balls
-    if (!gameState) {
-        drawBalls();
+    if (!gameStarted) {
+        createBalls();
+        animateBallsInterval = setInterval(animateBalls, 1000 / FPS);
     }
 
-    function drawBalls() {
+    function createBalls() {
         for (let i = 0; i < BALL_COUNT; i += 1) {
             ballsArray[i] = new Ball();
         }
     }
 
-
     //animate balls
-    let animateBallsInterval = setInterval(() => {
+    function animateBalls() {
         context.clearRect(0, 0, canvas.width, canvas.height);
         ballsArray.forEach(item => {
             item.x += item.vx * BALL_SPEED / FPS;
@@ -53,34 +54,29 @@ window.onload = function () {
         explodedBallsArray.forEach(explodedBalls => {
             explodedBalls.draw();
         });
-        if (gameState && explodedBallsArray.length === 0) {
+        if (gameStarted && explodedBallsArray.length === 0) {
             clearInterval(animateBallsInterval);
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            gameState = false;
         }
-
-    }, 1000 / FPS);
-
+    }
 
     canvas.addEventListener('click', event => {
-        if (!gameState) {
-            gameState = true;
+        if (!gameStarted) {
+            gameStarted = true;
         } else {
             return;
         }
         const x = event.offsetX;
         const y = event.offsetY;
-        startChainReaction(x, y);
+        startChainReaction(x, y, explodedBallsArray);
     }, false);
 
-    function startChainReaction(x, y) {
+    function startChainReaction(x, y, array) {
         let firstExplosion = new Ball();
         firstExplosion.x = x;
         firstExplosion.y = y;
-        explodedBallsArray.push(firstExplosion);
+        array.push(firstExplosion);
         explosion(firstExplosion, EXPLODING_TIME);
         fadeColor(firstExplosion, EXPLOSION_FADE_TIME);
-        gameState = true;
     }
 
     explodedBallsArray.forEach(explodedBall => {
@@ -132,8 +128,7 @@ window.onload = function () {
             context.fill();
         };
     }
-}
-;
+};
 
 //state of balls at the explosion moment
 function explosion(circle, duration) {
