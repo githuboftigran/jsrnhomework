@@ -3,10 +3,13 @@ const FRACTION = 0.98;
 const COUNT = 25;
 const SIZE = 120;
 
-const COLORS = [0xff0000, 0xff7f00, 0xffff00, 0x00ff00, 0x00ff00, 0x99ccff, 0x99ccff, 0x0000ff, 0x0000ff, 0x0000ff, 0xcc00ff, 0xcc00ff, 0xcc00ff, 0xcc00ff, 0xcc00ff, 0xcc00ff, ];
+//const COLORS = [0xff0000, 0xff7f00, 0xffff00, 0x00ff00, 0x00ff00, 0x99ccff, 0x99ccff, 0x0000ff, 0x0000ff, 0x0000ff, 0xcc00ff, 0xcc00ff, 0xcc00ff, 0xcc00ff, 0xcc00ff, 0xcc00ff, ];
 //const COLORS = [0x00afff, 0x0000ff, 0xff0000, 0xff0000];
 //const COLORS = [0xff0000, 0x0000ff, 0x00ffff];
 //const COLORS = [0x0000ff, 0xff0000];
+//const COLORS = [0x4444ff, 0xff4444];
+//const COLORS = [0x6600ff, 0x0000ff];
+const COLORS = [0x0066ff, 0x00ffff];
 
 const SQ32 = Math.sqrt(3) / 2;
 
@@ -27,33 +30,30 @@ const interpolateColor = (colors, position) => {
   const rGreen = Math.round(sGreen + (eGreen - sGreen) * fraction);
   const rBlue = Math.round(sBlue + (eBlue - sBlue) * fraction);
 
-  console.log('########################');
-  console.log(startColor.toString(16), endColor.toString(16), fraction);
-  console.log(rRed.toString(16), rGreen.toString(16), rBlue.toString(16));
-
   return (rRed << 16) | (rGreen << 8) | rBlue;
 };
 
-const drawHex = (size, center, color, context) => {
+const drawPolygon = (size, center, corners, color, context) => {
   const {cx, cy} = center;
   context.beginPath();
   context.strokeStyle = color;
-  context.lineWidth = 1;
-  context.moveTo(cx, cy - size);
-  context.lineTo(cx + SQ32 * size, cy - size / 2);
-  context.lineTo(cx + SQ32 * size, cy + size / 2);
-  context.lineTo(cx, cy + size);
-  context.lineTo(cx - SQ32 * size, cy + size / 2);
-  context.lineTo(cx - SQ32 * size, cy - size / 2);
-  context.lineTo(cx, cy - size);
+  context.moveTo(cx + size, cy);
+  for(let i = 0; i < corners; i+=1) {
+    const angle = i * 2 * Math.PI / corners;
+    const dx = Math.cos(angle) * size;
+    const dy = Math.sin(angle) * size;
+    context.lineTo(cx + dx, cy + dy);
+  }
+  context.closePath();
   context.stroke();
 };
 
-const drawPattern = (center, size, count, angle, fraction, context) => {
+const drawPattern = (center, size, corners, lineWidth, count, angle, fraction, context) => {
   context.save();
+  context.lineWidth = lineWidth;
   const {cx, cy} = center;
   for(let i = 0; i < count; i += 1) {
-    const alpha = Math.floor(255 - 255 * 0 / count);
+    const alpha = Math.floor(255 - 255 * i / count);
 
     const color = interpolateColor(COLORS, i / count);
     const colorStr = color.toString(16);
@@ -61,9 +61,9 @@ const drawPattern = (center, size, count, angle, fraction, context) => {
     if (colorWithAlpha.length < 8) {
       colorWithAlpha = '0'.repeat(8 - colorWithAlpha.length) + colorWithAlpha;
     }
-    drawHex(size, center, `#${colorWithAlpha}`, context);
+    drawPolygon(size, center, corners, `#${colorWithAlpha}`, context);
     context.translate(cx, cy);
-    context.rotate(angle);
+    context.rotate(angle * Math.PI / 180);
     context.translate(-cx, -cy);
     size *= fraction;
   }
@@ -72,14 +72,68 @@ const drawPattern = (center, size, count, angle, fraction, context) => {
 
 window.onload = function() {
   const canvas = document.getElementById('mainDrawingCanvas');
-  const resetButton = document.getElementById('resetButton');
-  const scoreSpan = document.getElementById('scoreSpan');
+  const cornersInput = document.getElementById('cornersInput');
+  const cornersValue = document.getElementById('cornersValue');
+  const lineWidthInput = document.getElementById('lineWidthInput');
+  const lineWidthValue = document.getElementById('lineWidthValue');
+  const angleInput = document.getElementById('angleInput');
+  const angleValue = document.getElementById('angleValue');
+  const fractionInput = document.getElementById('fractionInput');
+  const fractionValue = document.getElementById('fractionValue');
+  const countInput = document.getElementById('countInput');
+  const countValue = document.getElementById('countValue');
 
   const context = canvas.getContext('2d');
   const { width, height } = canvas;
-  context.fillStyle = 'black';
-  context.fillRect(0, 0, width, height);
 
+  let corners = cornersInput.value;
+  let lineWidth = lineWidthInput.value;
+  let angle = angleInput.value;
+  let fraction = fractionInput.value;
+  let count = countInput.value;
+
+  const redraw = () => {
+    context.fillStyle = 'black';
+    context.fillRect(0, 0, width, height);
+
+    const center = { cx: width / 2, cy: height / 2 };
+    drawPattern(center, 350, corners, lineWidth, count, angle, fraction, context);
+  };
+
+  cornersInput.addEventListener('input', ({ target }) => {
+    cornersValue.textContent = target.value;
+    corners = target.value;
+    redraw();
+  });
+
+  lineWidthInput.addEventListener('input', ({ target }) => {
+    lineWidthValue.textContent = target.value;
+    lineWidth = target.value;
+    redraw();
+  });
+
+  angleInput.addEventListener('input', ({ target }) => {
+    angleValue.textContent = target.value;
+    angle = target.value;
+    redraw();
+  });
+
+  fractionInput.addEventListener('input', ({ target }) => {
+    fractionValue.textContent = target.value;
+    fraction = target.value;
+    redraw();
+  });
+
+  countInput.addEventListener('input', ({ target }) => {
+    countValue.textContent = target.value;
+    count = target.value;
+    redraw();
+  });
+
+  redraw();
+};
+
+function drawAll(context) {
   let center = { cx: SIZE, cy: 10 + SIZE };
   drawPattern(center, SIZE, COUNT, 1, FRACTION, context);
   center = { cx: 3 * SIZE, cy: 10 +  SIZE };
@@ -87,9 +141,13 @@ window.onload = function() {
   center = { cx: 5 * SIZE, cy: 10 + SIZE };
   drawPattern(center, SIZE, COUNT, 3, FRACTION, context);
   center = { cx: 7 * SIZE, cy: 10 + SIZE };
-  drawPattern(center, SIZE, COUNT, 22, FRACTION, context);
+  drawPattern(center, SIZE, COUNT, 4, FRACTION, context);
   center = { cx: 9 * SIZE, cy: 10 + SIZE };
-  drawPattern(center, SIZE, COUNT, 23, FRACTION, context);
+  drawPattern(center, SIZE, COUNT, 5, FRACTION, context);
+  center = { cx: 11 * SIZE, cy: 10 + SIZE };
+  drawPattern(center, SIZE, COUNT, 6, FRACTION, context);
+  center = { cx: 13 * SIZE, cy: 10 + SIZE };
+  drawPattern(center, SIZE, COUNT, 7, FRACTION, context);
 
   center = { cx: SIZE, cy: 30 + 3 * SIZE };
   drawPattern(center, SIZE, 40, 1, FRACTION, context);
@@ -98,18 +156,26 @@ window.onload = function() {
   center = { cx: 5 * SIZE, cy: 30 + 3 * SIZE };
   drawPattern(center, SIZE, 40, 3, FRACTION, context);
   center = { cx: 7 * SIZE, cy: 30 + 3 * SIZE };
-  drawPattern(center, SIZE, 40, 22, FRACTION, context);
+  drawPattern(center, SIZE, 40, 4, FRACTION, context);
   center = { cx: 9 * SIZE, cy: 30 + 3 * SIZE };
-  drawPattern(center, SIZE, 40, 23, FRACTION, context);
+  drawPattern(center, SIZE, 40, 5, FRACTION, context);
+  center = { cx: 11 * SIZE, cy: 30 + 3 * SIZE };
+  drawPattern(center, SIZE, 40, 6, FRACTION, context);
+  center = { cx: 13 * SIZE, cy: 30 + 3 * SIZE };
+  drawPattern(center, SIZE, 40, 7, FRACTION, context);
 
   center = { cx: SIZE, cy: 50 + 5 * SIZE };
-  drawPattern(center, SIZE, 40, 1, 0.98, context);
+  drawPattern(center, SIZE, 50, 1, 0.98, context);
   center = { cx: 3 * SIZE, cy: 50 + 5 * SIZE };
-  drawPattern(center, SIZE, 40, 2, 0.983, context);
+  drawPattern(center, SIZE, 50, 2, 0.983, context);
   center = { cx: 5 * SIZE, cy: 50 + 5 * SIZE };
-  drawPattern(center, SIZE, 40, 3, 0.986, context);
+  drawPattern(center, SIZE, 50, 3, 0.986, context);
   center = { cx: 7 * SIZE, cy: 50 + 5 * SIZE };
-  drawPattern(center, SIZE, 40, 22, 0.989, context);
+  drawPattern(center, SIZE, 40, 4, 0.989, context);
   center = { cx: 9 * SIZE, cy: 50 + 5 * SIZE };
-  drawPattern(center, SIZE, 40, 23, 0.992, context);
-};
+  drawPattern(center, SIZE, 50, 5, 0.992, context);
+  center = { cx: 11 * SIZE, cy: 50 + 5 * SIZE };
+  drawPattern(center, SIZE, 50, 6, 0.992, context);
+  center = { cx: 13 * SIZE, cy: 50 + 5 * SIZE };
+  drawPattern(center, SIZE, 50, 7, 0.992, context);
+}
